@@ -82,12 +82,24 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
     }
 
     private void resetParentChild() {
-        if( getParent().getLeft() == this) {
+        if( isLeftChild() ) {
             getParent().setLeft(null);
         }
-        if( getParent().getRight() == this) {
+        if( isRightChild() ) {
             getParent().setRight(null);
         }
+    }
+
+    public boolean isRoot() {
+        return null == getParent();
+    }
+
+    public boolean isLeftChild() {
+        return null != getParent() && getParent().getLeft() == this;
+    }
+
+    public boolean isRightChild() {
+        return null != getParent() && getParent().getRight() == this;
     }
 
     public void delete() {
@@ -123,6 +135,19 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
                 } else {
                     return getLeft().search(data); // recursion
                 }
+            }
+        }
+    }
+
+    public Node<T> getUncle() {
+        Node<T> parent = this.getParent();
+        if( null == parent ){
+            return null;
+        } else {
+            if( parent.isRightChild() ) {
+                return parent.getParent().getLeft();
+            } else { // isRightChild
+                return parent.getParent().getRight();
             }
         }
     }
