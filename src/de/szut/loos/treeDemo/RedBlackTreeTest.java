@@ -2,15 +2,17 @@ package de.szut.loos.treeDemo;
 
 import org.junit.Assert;
 
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.TreeSet;
 
 import static org.junit.Assert.assertFalse;
 
 public class RedBlackTreeTest {
 
     private RedBlackTree<Integer> tree = new RedBlackTree<>();
-    private LinkedList<Integer> data = new LinkedList<>();
+    private LinkedHashSet<Integer> data = new LinkedHashSet<>();
 
     @org.junit.Test
     public void insert() throws Exception {
@@ -18,22 +20,22 @@ public class RedBlackTreeTest {
         random.setSeed(42);
         for( int i = 0; i < 100; i++ ) {
             int data = random.nextInt() % 1000;
-            this.data.add(data);
-            tree.insert(data);
-            System.out.println(tree);
+            if(this.data.add(data)) { // is new item
+                tree.insert(data);
+                System.out.println(tree);
 
-            try {
-                // condition 1 is true by definition
-                checkCondition2();
-                // condition 3 is true by definition
-                checkCondition4();
-                checkCondition5();
+                try {
+                    // condition 1 is true by definition
+                    checkCondition2();
+                    // condition 3 is true by definition
+                    checkCondition4();
+                    checkCondition5();
 
-                checkCompleteness();
-            }
-            catch (AssertionError e ) {
-                System.out.println(this.data);
-                throw e;
+                    checkCompleteness();
+                } catch (AssertionError e) {
+                    System.out.println(this.data);
+                    throw e;
+                }
             }
         }
     }

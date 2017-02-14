@@ -1,5 +1,7 @@
 package de.szut.loos.treeDemo;
 
+import sun.jvm.hotspot.utilities.RBNode;
+
 /**
  * Node of Red Black Tree
  */
@@ -102,45 +104,38 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
 
         // Case 4
         if( getUncleColor() == Color.BLACK && isRightChild() && getParent().isRed() ) { // parent must exists!
-            RedBlackNode<T> parent = getParent();
-            rotateLeft();
-            parent.rebalance();
-
+            rotateLeft(this);
             return;
         }
 
         // Case 5
         if( getUncleColor() == Color.BLACK && isLeftChild() && getParent().isRed() ) { // parent must exists!
-            RedBlackNode<T> parent = getParent();
-            Color parentcolor = parent.getColor();
-
-            RedBlackNode<T> grandparent = parent.getParent();
-            Color grandparentcolor = grandparent.getColor();
-
-            rotateRight();
-
-            parent.setColor( grandparentcolor );
-            grandparent.setColor( parentcolor );
-
+            rotateRight(this);
             return; // just for optical reasons (return is not necessary)
         }
     }
 
     /** Do a left rotation on parent that switches the roles of the current node N and its parent P
+     * @param center
      */
-    private void rotateLeft() {
+    private void rotateLeft(RedBlackNode<T> center) {
         RedBlackNode<T> parent = getParent();
         RedBlackNode<T> grandparent = parent.getParent();
         grandparent.setLeft( this );
         parent.setRight( getLeft() );
         setLeft( parent );
+        parent.rebalance(); // recurse
     }
 
     /** Do right rotation on gradfather
+     * @param center
      */
-    private void rotateRight() {
+    private void rotateRight(RedBlackNode<T> center) {
         RedBlackNode<T> parent = getParent();
         RedBlackNode<T> grandparent = parent.getParent();
+        Color parentcolor = parent.getColor();
+        Color grandparentcolor = grandparent.getColor();
+
 
         if( grandparent.isRoot() ) {
             setRoot( parent );
@@ -155,6 +150,9 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
 
         grandparent.setLeft( parent.getRight() );
         parent.setRight( grandparent );
+        parent.setColor( grandparentcolor );
+        grandparent.setColor( parentcolor );
+
     }
 
 }
