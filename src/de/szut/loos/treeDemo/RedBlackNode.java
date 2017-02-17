@@ -1,7 +1,5 @@
 package de.szut.loos.treeDemo;
 
-import sun.jvm.hotspot.utilities.RBNode;
-
 /**
  * Node of Red Black Tree
  */
@@ -102,15 +100,29 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
             return;
         }
 
-        // Case 4
         if( getUncleColor() == Color.BLACK && isRightChild() && getParent().isRed() ) { // parent must exists!
-            rotateLeft(this);
+            if( getParent().isLeftChild() ) { // Case 4
+                rotateLeft(getParent());
+                this.getLeft().rebalance();
+            }
+            if( getParent().isRightChild() ) { // Case 5
+                getParent().setColor(Color.BLACK);
+                getParent().getParent().setColor(Color.RED);
+                rotateLeft(getParent().getParent());
+            }
             return;
         }
 
-        // Case 5
         if( getUncleColor() == Color.BLACK && isLeftChild() && getParent().isRed() ) { // parent must exists!
-            rotateRight(this);
+            if( getParent().isLeftChild() ) { // Case 5
+                getParent().setColor(Color.BLACK);
+                getParent().getParent().setColor(Color.RED);
+                rotateRight(getParent().getParent());
+            }
+            if( getParent().isRightChild() ) { // Case 4
+                rotateRight(getParent());
+                this.getRight().rebalance();
+            }
             return; // just for optical reasons (return is not necessary)
         }
     }
@@ -119,40 +131,40 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
      * @param center
      */
     private void rotateLeft(RedBlackNode<T> center) {
-        RedBlackNode<T> parent = getParent();
-        RedBlackNode<T> grandparent = parent.getParent();
-        grandparent.setLeft( this );
-        parent.setRight( getLeft() );
-        setLeft( parent );
-        parent.rebalance(); // recurse
+        RedBlackNode<T> parent = center.getParent();
+
+        if( center.isRoot() ) {
+            setRoot( center.getRight() );
+        } else {
+            if( center.isRightChild() ) {
+                parent.setRight(center.getRight());
+            } else {
+                parent.setLeft(center.getRight());
+            }
+            RedBlackNode<T> rightChild = center.getRight(); // overwritten in next line
+            center.setRight(rightChild.getLeft());
+            rightChild.setLeft(center);
+        }
     }
 
     /** Do right rotation on gradfather
      * @param center
      */
     private void rotateRight(RedBlackNode<T> center) {
-        RedBlackNode<T> parent = getParent();
-        RedBlackNode<T> grandparent = parent.getParent();
-        Color parentcolor = parent.getColor();
-        Color grandparentcolor = grandparent.getColor();
+        RedBlackNode<T> parent = center.getParent();
 
-
-        if( grandparent.isRoot() ) {
-            setRoot( parent );
+        if( center.isRoot() ) {
+            setRoot( center.getLeft() );
         } else {
-            RedBlackNode<T> greatgrandparent = grandparent.getParent();
-            if( parent.isRightChild() ) {
-                greatgrandparent.setRight( parent );
-            } else { // parent is left child
-                greatgrandparent.setLeft(parent);
+            if( center.isLeftChild() ) {
+                parent.setLeft(center.getLeft());
+            } else {
+                parent.setRight(center.getLeft());
             }
+            RedBlackNode<T> leftChild = center.getLeft();
+            center.setLeft(leftChild.getRight());
+            leftChild.setRight(center);
         }
-
-        grandparent.setLeft( parent.getRight() );
-        parent.setRight( grandparent );
-        parent.setColor( grandparentcolor );
-        grandparent.setColor( parentcolor );
-
     }
 
 }

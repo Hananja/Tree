@@ -21,10 +21,10 @@ public class RedBlackTreeTest {
         for( int i = 0; i < 100; i++ ) {
             int data = random.nextInt() % 1000;
             if(this.data.add(data)) { // is new item
-                tree.insert(data);
-                System.out.println(tree);
-
                 try {
+                    tree.insert(data);
+                    System.out.println(tree);
+
                     // condition 1 is true by definition
                     checkCondition2();
                     // condition 3 is true by definition
@@ -33,6 +33,9 @@ public class RedBlackTreeTest {
 
                     checkCompleteness();
                 } catch (AssertionError e) {
+                    System.out.println(this.data);
+                    throw e;
+                } catch (NullPointerException e) {
                     System.out.println(this.data);
                     throw e;
                 }
