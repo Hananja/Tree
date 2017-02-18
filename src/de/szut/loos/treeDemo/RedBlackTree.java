@@ -29,6 +29,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinTree<T> {
      */
     void setRoot(RedBlackNode<T> root) {
         this.root = root;
+        root.resetParent();
     }
 
     @Override

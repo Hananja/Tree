@@ -5,11 +5,22 @@ package de.szut.loos.treeDemo;
  */
 public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
 
-    public enum Color { RED, BLACK};
+    /**
+     * set new parent
+     *
+     * this is package private to allow RedBlacTree to set a new root
+     *
+     */
+    void resetParent() {
+        this.parent = null;
+    }
+
+    public enum Color { RED, BLACK}
+
     private Color color = Color.RED;
     private RedBlackTree<T> tree;
 
-    public void setRoot(RedBlackNode<T> root) {
+    private void setRoot(RedBlackNode<T> root) {
         getTree().setRoot( root );
     }
 
@@ -75,6 +86,18 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
         }
     }
 
+    @Override
+    public String toString() {
+        switch (getColor()) {
+            case BLACK:
+                return "b" + super.toString();
+            case RED:
+                return "r" + super.toString();
+            default:
+                return super.toString();
+        }
+    }
+
     protected void rebalance() {
         // Cases are mutually exclusive, so return if one is true
 
@@ -104,13 +127,14 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
             if( getParent().isLeftChild() ) { // Case 4
                 rotateLeft(getParent());
                 this.getLeft().rebalance();
+                return;
             }
             if( getParent().isRightChild() ) { // Case 5
                 getParent().setColor(Color.BLACK);
                 getParent().getParent().setColor(Color.RED);
                 rotateLeft(getParent().getParent());
+                return;
             }
-            return;
         }
 
         if( getUncleColor() == Color.BLACK && isLeftChild() && getParent().isRed() ) { // parent must exists!
@@ -118,12 +142,13 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
                 getParent().setColor(Color.BLACK);
                 getParent().getParent().setColor(Color.RED);
                 rotateRight(getParent().getParent());
+                return;
             }
             if( getParent().isRightChild() ) { // Case 4
                 rotateRight(getParent());
                 this.getRight().rebalance();
+                return; // just for optical reasons (return is not necessary)
             }
-            return; // just for optical reasons (return is not necessary)
         }
     }
 
@@ -141,10 +166,10 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
             } else {
                 parent.setLeft(center.getRight());
             }
-            RedBlackNode<T> rightChild = center.getRight(); // overwritten in next line
-            center.setRight(rightChild.getLeft());
-            rightChild.setLeft(center);
         }
+        RedBlackNode<T> rightChild = center.getRight(); // overwritten in next line
+        center.setRight(rightChild.getLeft());
+        rightChild.setLeft(center);
     }
 
     /** Do right rotation on gradfather
@@ -161,10 +186,10 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
             } else {
                 parent.setRight(center.getLeft());
             }
-            RedBlackNode<T> leftChild = center.getLeft();
-            center.setLeft(leftChild.getRight());
-            leftChild.setRight(center);
         }
+        RedBlackNode<T> leftChild = center.getLeft();
+        center.setLeft(leftChild.getRight());
+        leftChild.setRight(center);
     }
 
 }

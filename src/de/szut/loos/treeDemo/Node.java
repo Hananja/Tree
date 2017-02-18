@@ -7,7 +7,7 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
     private T data;
     private Node<T> left;
     private Node<T> right;
-    private Node<T> parent;
+    protected Node<T> parent;
 
     public Node(T data) {
         this.data = data;
@@ -74,11 +74,19 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
 
     @Override
     public String toString() {
-        return "Node{" +
-                "data=" + data +
-                ", left=" + left +
-                ", right=" + right +
+        return "N{" +
+                data +
+                ", l=" + nullToDash(left) +
+                ", r=" + nullToDash(right) +
                 '}';
+    }
+
+    private static String nullToDash(Object o) {
+        if( null == o ) {
+            return "-";
+        } else {
+            return o.toString();
+        }
     }
 
     private void resetParentChild() {
