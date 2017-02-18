@@ -1,7 +1,7 @@
 package de.szut.loos.treeDemo;
 
 /**
- * Binary Tree implementation demo
+ * Binary Tree implementation demo (without red black balancing)
  */
 public class BinTree<T extends Comparable<T>> {
     private Node<T> root;

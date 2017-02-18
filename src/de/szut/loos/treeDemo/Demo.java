@@ -2,6 +2,7 @@ package de.szut.loos.treeDemo;
 
 /**
  * Demonstration of BinrayTree demo implementation
+ *
  */
 public class Demo {
     public static void main(String args[]) {
