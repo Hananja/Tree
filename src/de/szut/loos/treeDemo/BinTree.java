@@ -6,32 +6,37 @@ package de.szut.loos.treeDemo;
 public class BinTree<T extends Comparable<T>> {
     private Node<T> root;
 
-    @Override
-    public String toString() {
-        if( null == root ) {
-            return "null";
+    public Node<T> getRoot() {
+        return root;
+    }
+
+    void setRoot(Node<T> root) {
+        this.root = root;
+        root.resetParent();
+    }
+
+    public Node<T> search(T data) {
+        if (null == root) { // Baum leer?
+            return null;
         } else {
-            return root.toString();
+            return root.search(data);
         }
     }
 
     public void insert(T data) {
-        if(null == root) { // Baum leer?
+        if (null == root) { // Baum leer?
             root = new Node<>(data);
         } else {
             root.insert(data);
         }
     }
 
-    public Node<T> getRoot() {
-        return root;
-    }
-
-    public Node<T> search(T data) {
-        if(null == root) { // Baum leer?
-            return null;
+    @Override
+    public String toString() {
+        if (null == root) {
+            return "null";
         } else {
-            return root.search(data);
+            return root.toString();
         }
     }
 }

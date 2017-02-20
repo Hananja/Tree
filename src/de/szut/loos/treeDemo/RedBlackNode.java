@@ -5,20 +5,15 @@ package de.szut.loos.treeDemo;
  */
 public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
 
-    /**
-     * set new parent
-     *
-     * this is package private to allow RedBlacTree to set a new root
-     *
-     */
-    void resetParent() {
-        this.parent = null;
-    }
-
-    public enum Color { RED, BLACK}
+    public enum Color {RED, BLACK}
 
     private Color color = Color.RED;
     private RedBlackTree<T> tree;
+
+    public RedBlackNode(RedBlackTree<T> tree, T data) {
+        super(data);
+        this.tree = tree;
+    }
 
     private void setRoot(RedBlackNode<T> root) {
         getTree().setRoot( root );
@@ -26,11 +21,6 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
 
     private RedBlackTree<T> getTree() {
         return tree;
-    }
-
-    public RedBlackNode(RedBlackTree<T> tree, T data) {
-        super(data);
-        this.tree = tree;
     }
 
     @Override
@@ -41,6 +31,25 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
     @Override
     public RedBlackNode<T> getRight() {
         return (RedBlackNode<T>)super.getRight();
+    }
+
+    @Override
+    public RedBlackNode<T> getParent() {
+        return (RedBlackNode<T>)super.getParent();
+    }
+
+    @Override
+    public RedBlackNode<T> getUncle() {
+        return (RedBlackNode<T>)super.getUncle();
+    }
+
+    public Color getUncleColor() {
+        RedBlackNode<T> uncle = getUncle();
+        if( null == uncle ) { // no uncle
+            return Color.BLACK; // NIL Nodes are black
+        } else {
+            return uncle.getColor();
+        }
     }
 
     protected void setColor(Color color) {
@@ -60,30 +69,13 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
     }
 
     @Override
-    public RedBlackNode<T> getParent() {
-        return (RedBlackNode<T>)super.getParent();
+    public void insert(T data) {
+        insert(new RedBlackNode<>(tree, data));
     }
-
-    @Override
-    public RedBlackNode<T> getUncle() {
-        return (RedBlackNode<T>)super.getUncle();
-    }
-
-    @Override
-    public void insert(T data) { insert(new RedBlackNode<>(tree, data));}
 
     protected void insert(RedBlackNode<T> node) {
         super.insert(node);
         node.rebalance();
-    }
-
-    public Color getUncleColor() {
-        RedBlackNode<T> uncle = getUncle();
-        if( null == uncle ) {
-            return Color.BLACK; // NIL Nodes are black
-        } else {
-            return uncle.getColor();
-        }
     }
 
     @Override
@@ -99,12 +91,13 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
     }
 
     protected void rebalance() {
-        // Cases are mutually exclusive, so return if one is true
+        // Cases are mutually exclusive,
+        // so return if one is true
 
         // Case 1
         if( isRoot() ) {
             setColor( Color.BLACK );
-            return;
+            return; // everything is awesome
         }
 
         // Case 2

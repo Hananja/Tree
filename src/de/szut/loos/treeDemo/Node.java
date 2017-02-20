@@ -17,16 +17,12 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
         return data;
     }
 
+    protected void setData(T data) {
+        this.data = data;
+    }
+
     public Node<T> getLeft() {
         return left;
-    }
-
-    public Node<T> getParent() {
-        return parent;
-    }
-
-    public Node<T> getRight() {
-        return right;
     }
 
     protected void setLeft(Node left) {
@@ -36,6 +32,10 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
         }
     }
 
+    public Node<T> getRight() {
+        return right;
+    }
+
     protected void setRight(Node right) {
         this.right = right;
         if (right != null) { // housekeeping for parent
@@ -43,8 +43,43 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
         }
     }
 
-    protected void setData(T data) {
-        this.data = data;
+    public Node<T> getParent() {
+        return parent;
+    }
+
+    /**
+     * set new parent
+     *
+     * this is package private to allow RedBlacTree to set a new root
+     *
+     */
+    void resetParent() {
+        this.parent = null;
+    }
+
+    public Node<T> getUncle() {
+        Node<T> parent = this.getParent();
+        if( null == parent || null == parent.getParent() ){
+            return null;
+        } else {
+            if( parent.isRightChild() ) {
+                return parent.getParent().getLeft();
+            } else { // isLeftChild
+                return parent.getParent().getRight();
+            }
+        }
+    }
+
+    public boolean isRoot() {
+        return null == getParent();
+    }
+
+    public boolean isLeftChild() {
+        return null != getParent() && getParent().getLeft() == this;
+    }
+
+    public boolean isRightChild() {
+        return null != getParent() && getParent().getRight() == this;
     }
 
     protected void insert(Node node) {
@@ -72,23 +107,6 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
         insert(new Node<>(data));
     }
 
-    @Override
-    public String toString() {
-        return "N{" +
-                data +
-                ", l=" + nullToDash(left) +
-                ", r=" + nullToDash(right) +
-                '}';
-    }
-
-    private static String nullToDash(Object o) {
-        if( null == o ) {
-            return "-";
-        } else {
-            return o.toString();
-        }
-    }
-
     private void resetParentChild() {
         if( isLeftChild() ) {
             getParent().setLeft(null);
@@ -96,18 +114,6 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
         if( isRightChild() ) {
             getParent().setRight(null);
         }
-    }
-
-    public boolean isRoot() {
-        return null == getParent();
-    }
-
-    public boolean isLeftChild() {
-        return null != getParent() && getParent().getLeft() == this;
-    }
-
-    public boolean isRightChild() {
-        return null != getParent() && getParent().getRight() == this;
     }
 
     public void delete() {
@@ -119,11 +125,6 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
         if( null != getRight() ) { // right children?
             parent.insert(getRight());
         }
-    }
-
-    @Override
-    public int compareTo(Node<T> o) {
-        return getData().compareTo(o.getData());
     }
 
     public Node<T> search(T data) {
@@ -147,16 +148,25 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
         }
     }
 
-    public Node<T> getUncle() {
-        Node<T> parent = this.getParent();
-        if( null == parent ){
-            return null;
+    @Override
+    public int compareTo(Node<T> o) {
+        return getData().compareTo(o.getData());
+    }
+
+    @Override
+    public String toString() {
+        return "N{" +
+                data +
+                ", l=" + nullToDash(left) +
+                ", r=" + nullToDash(right) +
+                '}';
+    }
+
+    private static String nullToDash(Object o) {
+        if( null == o ) {
+            return "-";
         } else {
-            if( parent.isRightChild() ) {
-                return parent.getParent().getLeft();
-            } else { // isRightChild
-                return parent.getParent().getRight();
-            }
+            return o.toString();
         }
     }
 }

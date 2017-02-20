@@ -10,7 +10,6 @@ import static org.junit.Assert.assertFalse;
 
 public class RedBlackTreeTest {
 
-
     @org.junit.Test
     public void insert() throws Exception {
         Random random = new Random();
@@ -21,10 +20,11 @@ public class RedBlackTreeTest {
             LinkedHashSet<Integer> datas = new LinkedHashSet<>();
             for (int i = 0; i < 1000; i++) {
                 int data = random.nextInt() % 10000;
-                if (datas.add(data)) { // is new item
+                if (datas.add(data)) { // is new item?
                     try {
                         tree.insert(data);
-                        System.out.println(String.format("% 3d: add % 5d -> %s", i, data, tree));
+                        System.out.println(String.format("% 3d: add % 5d -> %s",
+                                i, data, tree));
 
                         checkCondition1_hasColor(tree);
                         checkCondition2_rootIsBlack(tree);
