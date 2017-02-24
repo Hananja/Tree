@@ -108,8 +108,8 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
         // Case 3
         if( getParent().isRed() && getUncleColor() == Color.RED ) {
             getParent().setColor( Color.BLACK );
-            getUncle().setColor( Color.BLACK ); // uncle must exists!
-            getParent().getParent().setColor( Color.RED ); // grandfather must exists!
+            getUncle().setColor( Color.BLACK );            // uncle must exists, because it is red!
+            getParent().getParent().setColor( Color.RED ); // grandfather must exists, because there is an uncle!
 
             // recurse
             getParent().getParent().rebalance();
@@ -119,7 +119,7 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
         if( getUncleColor() == Color.BLACK && isRightChild() && getParent().isRed() ) { // parent must exists!
             if( getParent().isLeftChild() ) { // Case 4
                 rotateLeft(getParent());
-                this.getLeft().rebalance();
+                this.getLeft().rebalance(); // recurse
                 return;
             }
             if( getParent().isRightChild() ) { // Case 5
@@ -139,7 +139,7 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
             }
             if( getParent().isRightChild() ) { // Case 4
                 rotateRight(getParent());
-                this.getRight().rebalance();
+                this.getRight().rebalance(); // recurse
                 return; // just for optical reasons (return is not necessary)
             }
         }
@@ -153,10 +153,10 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
 
         if( center.isRoot() ) {
             setRoot( center.getRight() );
-        } else {
+        } else { // center is not root
             if( center.isRightChild() ) {
                 parent.setRight(center.getRight());
-            } else {
+            } else { // center is left child
                 parent.setLeft(center.getRight());
             }
         }
@@ -165,7 +165,7 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
         rightChild.setLeft(center);
     }
 
-    /** Do right rotation on gradfather
+    /** Do right rotation on center
      * @param center
      */
     private void rotateRight(RedBlackNode<T> center) {
@@ -173,10 +173,10 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T>{
 
         if( center.isRoot() ) {
             setRoot( center.getLeft() );
-        } else {
+        } else { // center is not root
             if( center.isLeftChild() ) {
                 parent.setLeft(center.getLeft());
-            } else {
+            } else { // center is right child
                 parent.setRight(center.getLeft());
             }
         }
